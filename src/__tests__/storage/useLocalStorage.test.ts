@@ -35,7 +35,7 @@ describe('useLocalStorage', () => {
   it('sets value with functional updater', () => {
     const { result } = renderHook(() => useLocalStorage(key, 1))
     act(() => {
-      result.current.setValue(prev => prev + 1)
+      result.current.setValue((prev) => prev + 1)
     })
     expect(result?.current?.storedValue).toBe(2)
     expect(localStorage.getItem(key)).toBe('2')
@@ -64,7 +64,9 @@ describe('useLocalStorage', () => {
   })
 
   it('is SSR-safe (returns initial when window is undefined)', () => {
-    const getItem = vi.spyOn(window.localStorage, 'getItem').mockImplementation(() => { throw new Error('no storage') })
+    const getItem = vi.spyOn(window.localStorage, 'getItem').mockImplementation(() => {
+      throw new Error('no storage')
+    })
     const { result } = renderHook(() => useLocalStorage('k', 'initial'))
     expect(result?.current?.storedValue).toBe('initial')
     getItem.mockRestore()

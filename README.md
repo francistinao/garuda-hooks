@@ -8,6 +8,7 @@ Francis Tin-ao
 
 ## Features
 
+- Zero-dependency hooks for React and NextJS
 - TypeScript-first with strict mode, no `any`
 - SSR-safe defaults for browser APIs
 - Consistent return patterns (tuple or object) across hooks

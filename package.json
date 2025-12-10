@@ -16,8 +16,8 @@
     "prepare": "husky",
     "prepublishOnly": "npm run lint && npm run typecheck && npm run test && npm run build"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["typescript-first", "ssr-safe", "esm", "cjs", "tree-shakeable", "perhook", "zero", "zero-dependency"],
+  "author": "Francis Tin-ao",
   "license": "ISC",
   "packageManager": "pnpm@10.10.0",
   "dependencies": {
