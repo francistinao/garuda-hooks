@@ -121,42 +121,41 @@ export function useSessionStorage<T>(
   })
 
   const setValue = useCallback(
-    (value: T | ((prev: T) => T)) => {
-      try {
-        // check if its not server side rendering
-        // only not ssr (client) allows storing values in local and session storage
-        if (isSSR) return
+    (next: T | ((prev: T) => T)) => {
+      setStoredValue((prev) => {
+        const valueToStore = typeof next === 'function' ? (next as (p: T) => T)(prev) : next
 
-        if(!isValidInputs(key, value)) {
-            throw new Error("Either key or value is undefined. Please provide value.")
+        if (!key) {
+          console.warn('useSessionStorage: key is required')
+          return valueToStore
         }
 
-        setStoredValue((prev) => {
-          const valueToStore = value instanceof Function ? value(prev) : value
-
+        // SSR-safe: update state, skip storage writes when window is missing
+        if (!isSSR) {
           try {
-            storageEnv(STORAGE_ENV.SESSION_STORAGE).setItem(key, JSON.stringify(valueToStore))
-            // wont schedule for clean up since this is storing a value with out expiration
-            // only get deleted once browser or window is closed
-          } catch (error) {
-            console.error('Error storing value in session storage.')
+            // consistent shape so hydration works the same as TTL writes
+            storageEnv(STORAGE_ENV.SESSION_STORAGE).setItem(
+              key,
+              JSON.stringify({ value: valueToStore, expiresAt: null }),
+            )
+            // no scheduleCleanup — this is the non-expiring path
+          } catch (err) {
+            console.error('useSessionStorage: failed to store value', err)
           }
+        }
 
-          return valueToStore
-        })
-      } catch (error) {
-        throw new Error('Unexpected error. Please try again')
-      }
+        return valueToStore
+      })
     },
-    [key, initialValue, ttl, isSSR],
+    [key, isSSR],
   )
 
   const removeValue = useCallback(() => {
     if (isSSR) return
 
     try {
-      if(!isValidInputs(key)) {
-        throw new Error("Key is undefined. Please provide a key");
+      if (!isValidInputs(key)) {
+        throw new Error('Key is undefined. Please provide a key')
       }
 
       const checkItemIfStillExist = storageEnv(STORAGE_ENV.SESSION_STORAGE).getItem(key)
@@ -176,9 +175,9 @@ export function useSessionStorage<T>(
   const setValueWithTTL = useCallback(
     (next: T | ((prev: T) => T), overrideTtl: number) => {
       if (isSSR) return
-      
-      if(!isValidInputs(key)) {
-        throw new Error("Key is undefined. Please provide a key");
+
+      if (!isValidInputs(key)) {
+        throw new Error('Key is undefined. Please provide a key')
       }
 
       if (next === undefined) throw new Error('Value is required')
@@ -210,14 +209,11 @@ export function useSessionStorage<T>(
   )
 
   const getStoredValue = useCallback(() => {
-    if(isSSR) return;
-
-
+    if (isSSR) return
 
     try {
-        
     } catch (error) {
-        return null;
+      return null
     }
   }, [key])
 

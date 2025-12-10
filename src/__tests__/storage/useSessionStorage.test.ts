@@ -46,11 +46,10 @@ describe('useSessionStorage', () => {
     expect(sessionStorage.getItem(key)).toBeNull()
   })
 
-  it('setValue stores direct value with TTL metadata', () => {
-    // writing should update state, persist payload, and schedule cleanup with hook ttl
+  it('setValue stores non-expiring payload and keeps it', () => {
+    // non-TTL path should persist with expiresAt: null and not auto-clean
     vi.useFakeTimers()
-    vi.setSystemTime(new Date('2024-01-01T00:00:00Z'))
-    const { result } = renderHook(() => useSessionStorage(key, 'initial', 1000))
+    const { result } = renderHook(() => useSessionStorage(key, 'initial'))
 
     act(() => {
       result.current.setValue('next')
@@ -61,11 +60,11 @@ describe('useSessionStorage', () => {
 
     const parsed = JSON.parse(payloadRaw as string)
     expect(parsed.value).toBe('next')
-    expect(parsed.expiresAt).toBe(Date.now() + 1000)
+    expect(parsed.expiresAt).toBeNull()
     expect(result.current.storedValue).toBe('next')
 
     vi.runAllTimers()
-    expect(sessionStorage.getItem(key)).toBeNull()
+    expect(sessionStorage.getItem(key)).not.toBeNull() // no cleanup scheduled for non-expiring writes
   })
 
   it('supports functional updater and falsy values', () => {
@@ -124,4 +123,3 @@ describe('useSessionStorage', () => {
     getItemSpy.mockRestore()
   })
 })
-
