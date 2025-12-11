@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-pnpm lint && pnpm
+pnpm lint --max-warnings=0 && pnpm
