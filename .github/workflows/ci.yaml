@@ -37,7 +37,7 @@ jobs:
         run: pnpm typecheck
 
       - name: Test
-        run: pnpm test -- --runInBand --coverage=false --config vitest.config.mjs
+        run: pnpm test -- --coverage=false
 
       - name: Build
         run: pnpm build
