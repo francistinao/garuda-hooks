@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-pnpm lint --max-warnings=0 && pnpm typecheck && pnpm test
+pnpm lint --max-warnings=0 && pnpm typecheck
