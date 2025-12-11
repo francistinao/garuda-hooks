@@ -191,7 +191,7 @@ export function useSessionStorage<T>(
         return valueToStore
       })
     },
-    [key, isSSR, scheduleCleanup, isValidInputs],
+    [key, isSSR, scheduleCleanup, isValidInputs, defaultTTL],
   )
 
   const getStoredValue = useCallback(() => {
