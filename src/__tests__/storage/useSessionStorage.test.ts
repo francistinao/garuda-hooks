@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import { useSessionStorage } from '../../hooks/storage'
+import { useSessionStorage } from '../../hooks'
 
 describe('useSessionStorage', () => {
   const key = 'session-key'
@@ -72,7 +72,7 @@ describe('useSessionStorage', () => {
     const { result } = renderHook(() => useSessionStorage(key, 1, 500))
 
     act(() => {
-      result.current.setValue((prev) => prev - 1)
+      result.current.setValue((prev: number) => prev - 1)
     })
 
     expect(result.current.storedValue).toBe(0)
@@ -121,5 +121,11 @@ describe('useSessionStorage', () => {
     expect(result.current.storedValue).toBe('initial')
 
     getItemSpy.mockRestore()
+  })
+
+  it('gets the stored value with the key', () => {
+    sessionStorage.setItem(key, JSON.stringify('stored'))
+    const { result } = renderHook(() => useSessionStorage(key, 'initial'))
+    expect(result?.current?.storedValue).toBe('stored')
   })
 })

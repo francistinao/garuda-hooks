@@ -2,7 +2,7 @@ import path from 'node:path'
 import typescript from '@rollup/plugin-typescript'
 import commonjs from '@rollup/plugin-commonjs'
 import resolve from '@rollup/plugin-node-resolve'
-import { terser } from '@rollup/plugin-terser'
+import terser from '@rollup/plugin-terser'
 import dts from 'rollup-plugin-dts'
 
 const input = 'src/index.ts'
@@ -19,15 +19,15 @@ export default [
     input,
     external,
     output: [
-      { dir: 'dist/esm', format: 'esm', sourcemap: true, preserveModules: true },
-      { dir: 'dist/cjs', format: 'cjs', sourcemap: true, preserveModules: true, entryFileNames: '[name].cjs' }
+      { file: 'dist/esm/index.js', format: 'esm', sourcemap: true },
+      { file: 'dist/cjs/index.cjs', format: 'cjs', sourcemap: true }
     ],
     plugins: [...basePlugins, terser()]
   },
   {
     input,
     external,
-    output: { dir: 'dist/types', format: 'esm' },
+    output: { file: 'dist/types/index.d.ts', format: 'esm' },
     plugins: [dts()]
   }
 ]

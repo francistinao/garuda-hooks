@@ -1,8 +1,17 @@
 {
   "name": "garuda-hooks",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A zero-dependency React/NextJS hooks: TypeScript-first (strict, no any), SSR-safe browser API usage, consistent tuple/object returns, ESM+CJS output with generated types, Vitest + React Testing Library coverage, and tree-shakeable per-hook entry points.",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.cjs",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
   "scripts": {
     "lint": "eslint \"src/**/*.{ts,tsx}\" \"__tests__/**/*.{ts,tsx}\"",
     "format": "prettier -c \"src/**/*.{ts,tsx}\" \"__tests__/**/*.{ts,tsx}\"",
@@ -16,14 +25,25 @@
     "prepare": "husky",
     "prepublishOnly": "npm run lint && npm run typecheck && npm run test && npm run build"
   },
-  "keywords": ["typescript-first", "ssr-safe", "esm", "cjs", "tree-shakeable", "perhook", "zero", "zero-dependency"],
+  "keywords": [
+    "typescript-first",
+    "ssr-safe",
+    "esm",
+    "cjs",
+    "tree-shakeable",
+    "perhook",
+    "zero",
+    "zero-dependency"
+  ],
   "author": "Francis Tin-ao",
   "license": "ISC",
   "packageManager": "pnpm@10.10.0",
-  "dependencies": {
+  "peerDependencies": {
     "react": "^19.2.1",
     "react-dom": "^19.2.1"
   },
+  "sideEffects": false,
+  "files": ["dist", "README.md", "LICENSE"],
   "devDependencies": {
     "@commitlint/cli": "^20.2.0",
     "@commitlint/config-conventional": "^20.2.0",
@@ -52,6 +72,7 @@
     "rollup-plugin-dts": "^6.3.0",
     "size-limit": "^12.0.0",
     "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
     "typescript": "^5.9.3",
     "vitest": "^4.0.15"
   }

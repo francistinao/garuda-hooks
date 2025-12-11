@@ -16,42 +16,16 @@ interface UseSessionStorageReturn<T> {
   setValue: (value: T | ((prev: T) => T)) => void
   removeValue: () => void
   setValueWithTTL: (value: T, ttl: number) => void
-  //getStoredValue: () => T | undefined
-  //searchValue: (search: string) => T[] | undefined
-  //removeValueWithTTL: (ttl: number) => void
-  //getStoredValueWithTTL: (ttl: number) => T | undefined
-  //searchValueWithTTL: (search: string, ttl: number) => T[] | undefined
-  //setValueWithTTLAndCallback: (value: T, ttl: number, callback: (value: T) => void) => void
-  //removeValueWithTTLAndCallback: (ttl: number, callback: (value: T) => void) => void
-  //getStoredValueWithTTLAndCallback: (ttl: number, callback: (value: T) => void) => T | undefined
-  /**
-   * 
-   * searchValueWithTTLAndCallback: (
-    search: string,
-    ttl: number,
-    callback: (value: T) => void,
-  ) => T[] | undefined
-   */
+  getStoredValue: () => NonNullable<T> | T | undefined
 }
 
 /**
- * 
- * TODO:
- * 
- *  DONE: Falsy values: if (!value …) rejects valid 0, '', false. Only disallow value === undefined; allow other falsy values.
-    DONE: Stale TTL: setValue’s useCallback deps omit ttl (and isSSR). TTL changes won’t propagate; add them to deps.
-    DONE: SSR handling: Don’t throw when window is missing. If isSSR, skip setItem but still update state.
-    DONE: Schedule cleanup on writes: After writing, call scheduleCleanup(expiresAt) in both setValue and setValueWithTTL; otherwise proactive cleanup never runs.
-    DONE: Storage write errors: Wrap setItem in try/catch; on failure, keep state updated and swallow/log.
-    setValueWithTTL: Currently not memoized and has no validation. Add key/undefined-value checks, validate overrideTtl (number), guard SSR, reuse the same write path, and schedule cleanup.
-    State sync on remove: removeValue doesn’t set state to initialValue when not SSR. Do so after removal so state stays in sync.
-    Interface vs return: You declare many optional functions (getStoredValue, search, callbacks) but only return setValueWithTTL. Either implement/return them or remove from the interface.
  * 
  * @param key 
  * 
  * @param initialValue 
  * @param ttl 
- * @returns 
+ * @returns T in tuple or object or undefine
  */
 
 export function useSessionStorage<T>(
@@ -101,20 +75,26 @@ export function useSessionStorage<T>(
     try {
       const rawData = storageEnv(STORAGE_ENV.SESSION_STORAGE)?.getItem(key)
 
-      if (!rawData || typeof rawData === 'undefined') return initialValue
+      if (!rawData) return initialValue
 
       const parsed = JSON.parse(rawData)
-      if (parsed.expiresAt && parsed.expiresAt < Date.now()) {
-        storageEnv(STORAGE_ENV.SESSION_STORAGE)?.removeItem(key)
-        return initialValue
+
+      // check if parsed is an object and it has a property 'expiresAt'
+      if (parsed && typeof parsed === 'object' && 'expiresAt' in parsed) {
+        const expiresAt = (parsed as any).expiresAt
+
+        if (typeof expiresAt === 'number' && expiresAt < Date.now()) {
+          storageEnv(STORAGE_ENV.SESSION_STORAGE)?.removeItem(key)
+          return initialValue
+        }
+        
+        if (typeof expiresAt === 'number') {
+          scheduleCleanup(expiresAt)
+        }
+        return 'value' in parsed ? (parsed as any).value : initialValue
       }
 
-      // if the session data is not yet expired, directly schedule it
-      if (parsed?.expiresAt) {
-        scheduleCleanup(parsed.expiresAt)
-      }
-
-      return parsed.value ?? initialValue
+      return parsed as T
     } catch (error) {
       return initialValue
     }
@@ -209,13 +189,29 @@ export function useSessionStorage<T>(
   )
 
   const getStoredValue = useCallback(() => {
-    if (isSSR) return
+    if (isSSR) return undefined
+    if (!isValidInputs(key)) return undefined
 
     try {
-    } catch (error) {
-      return null
+      const rawData = storageEnv(STORAGE_ENV.SESSION_STORAGE)?.getItem(key)
+      if (!rawData) return undefined
+
+      const parsed = JSON.parse(rawData)
+
+      if (parsed && typeof parsed === 'object' && 'expiresAt' in parsed) {
+        const expiresAt = (parsed as any).expiresAt
+        if (typeof expiresAt === 'number' && expiresAt <= Date.now()) {
+          storageEnv(STORAGE_ENV.SESSION_STORAGE).removeItem(key)
+          return undefined
+        }
+        return 'value' in parsed ? (parsed as any).value : parsed
+      }
+
+      return parsed as T
+    } catch {
+      return undefined
     }
-  }, [key])
+  }, [isSSR, key])
 
   // delete so it wont cause memory leaks
   useEffect(() => {
@@ -229,12 +225,6 @@ export function useSessionStorage<T>(
     setValue,
     removeValue,
     setValueWithTTL,
-    // remaining hooks and variables
-    //searchValue <- works with both sessions with or without ttl
-    //getStoredValue
-    //setValueWithTTL
-    //removeValueWithTTL
-    //getStoredValueWithTTL
-    //searchValueWithTTL
+    getStoredValue
   }
 }
