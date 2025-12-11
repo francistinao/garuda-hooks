@@ -18,7 +18,7 @@ describe('useSessionStorage', () => {
 
   it('returns initial value when key is absent', () => {
     // baseline: nothing stored yet -> hook should return initial
-    const { result } = renderHook(() => useSessionStorage(key, 'initial', 500))
+    const { result } = renderHook(() => useSessionStorage(key, 'initial'))
     expect(result.current.storedValue).toBe('initial')
   })
 
@@ -29,7 +29,7 @@ describe('useSessionStorage', () => {
     const expiresAt = Date.now() + 1000
     sessionStorage.setItem(key, JSON.stringify({ value: 'persisted', expiresAt }))
 
-    const { result } = renderHook(() => useSessionStorage(key, 'initial', 500))
+    const { result } = renderHook(() => useSessionStorage(key, 'initial'))
     expect(result.current.storedValue).toBe('persisted')
 
     vi.advanceTimersByTime(1001)
@@ -69,7 +69,7 @@ describe('useSessionStorage', () => {
 
   it('supports functional updater and falsy values', () => {
     // functional update should accept prev value and allow falsy results like 0
-    const { result } = renderHook(() => useSessionStorage(key, 1, 500))
+    const { result } = renderHook(() => useSessionStorage(key, 1))
 
     act(() => {
       result.current.setValue((prev: number) => prev - 1)

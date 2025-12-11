@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { STORAGE_ENV, storageEnv } from '../../utils/storage/storage-env'
 
 /**
@@ -6,10 +6,6 @@ import { STORAGE_ENV, storageEnv } from '../../utils/storage/storage-env'
  * Session storage is a lightweight, in-memory storage for a single browser tab.
  * It is similar to localStorage, but the data is only stored for the duration of the browser tab.
  */
-
-// TTL
-// can be passed as a parameter to the hook or set as a default
-const DEFAULT_TTL = 1000 * 60 * 60 * 4 // 4 hours in milliseconds
 
 interface UseSessionStorageReturn<T> {
   storedValue: T
@@ -19,27 +15,37 @@ interface UseSessionStorageReturn<T> {
   getStoredValue: () => NonNullable<T> | T | undefined
 }
 
+type StoredPayload<T> = {
+  value: T
+  expiresAt: number | null
+}
+
 /**
  * 
  * @param key 
  * 
  * @param initialValue 
- * @param ttl 
  * @returns T in tuple or object or undefine
  */
 
 export function useSessionStorage<T>(
   key: string,
   initialValue: T,
-  ttl: number = DEFAULT_TTL,
+  defaultTTL?: number
 ): UseSessionStorageReturn<T> {
   const isSSR = typeof window === 'undefined' || !window
   // holds the setTimeout handler which will remove the session entry when TTL elapses
   const cleanupTimer = useRef<number | null>(null)
 
-  const isValidInputs = (key: string, value?: T | ((prev: T) => T)): Boolean => {
-    return key !== undefined || value !== undefined
-  }
+  const isValidInputs = useCallback((maybeKey: string, value?: T | ((prev: T) => T)): boolean => {
+    return maybeKey !== undefined || value !== undefined
+  }, [])
+
+  const isStoredPayload = useCallback((parsed: unknown): parsed is StoredPayload<T> => {
+    if (!parsed || typeof parsed !== 'object') return false
+    if (!('expiresAt' in parsed)) return false
+    return true
+  }, [])
 
   const scheduleCleanup = useCallback(
     (expiresAt: number) => {
@@ -61,7 +67,7 @@ export function useSessionStorage<T>(
             // remove if true
             storageEnv(STORAGE_ENV.SESSION_STORAGE).removeItem(key)
           }
-        } catch (error) {
+        } catch {
           // no op, continue running the schedule or settimer.
         }
       }, delay)
@@ -77,25 +83,24 @@ export function useSessionStorage<T>(
 
       if (!rawData) return initialValue
 
-      const parsed = JSON.parse(rawData)
+      const parsed = JSON.parse(rawData) as unknown
 
-      // check if parsed is an object and it has a property 'expiresAt'
-      if (parsed && typeof parsed === 'object' && 'expiresAt' in parsed) {
-        const expiresAt = (parsed as any).expiresAt
+      if (isStoredPayload(parsed)) {
+        const expiresAt = parsed.expiresAt
 
         if (typeof expiresAt === 'number' && expiresAt < Date.now()) {
           storageEnv(STORAGE_ENV.SESSION_STORAGE)?.removeItem(key)
           return initialValue
         }
-        
+
         if (typeof expiresAt === 'number') {
           scheduleCleanup(expiresAt)
         }
-        return 'value' in parsed ? (parsed as any).value : initialValue
+        return 'value' in parsed ? parsed.value : initialValue
       }
 
       return parsed as T
-    } catch (error) {
+    } catch {
       return initialValue
     }
   })
@@ -147,13 +152,14 @@ export function useSessionStorage<T>(
 
       // once item is remove based on key
       setStoredValue(initialValue)
-    } catch (error) {
+    } catch {
       throw new Error('Unexpected Error. Please try again later.')
     }
-  }, [key, initialValue])
+  }, [key, initialValue, isSSR, isValidInputs])
 
   const setValueWithTTL = useCallback(
     (next: T | ((prev: T) => T), overrideTtl: number) => {
+      const ttl = overrideTtl ?? defaultTTL;
       if (isSSR) return
 
       if (!isValidInputs(key)) {
@@ -168,7 +174,7 @@ export function useSessionStorage<T>(
         const valueToStore = next instanceof Function ? next(prev) : next
 
         try {
-          const expiresAt = Date.now() + overrideTtl
+          const expiresAt = Date.now() + ttl
 
           const payload = JSON.stringify({
             value: valueToStore,
@@ -179,13 +185,13 @@ export function useSessionStorage<T>(
 
           scheduleCleanup(expiresAt)
         } catch (err) {
-          console.error('Error storing value in session with TTL')
+          console.error('Error storing value in session with TTL', err)
         }
 
         return valueToStore
       })
     },
-    [key, isSSR, scheduleCleanup],
+    [key, isSSR, scheduleCleanup, isValidInputs],
   )
 
   const getStoredValue = useCallback(() => {
@@ -196,22 +202,22 @@ export function useSessionStorage<T>(
       const rawData = storageEnv(STORAGE_ENV.SESSION_STORAGE)?.getItem(key)
       if (!rawData) return undefined
 
-      const parsed = JSON.parse(rawData)
+      const parsed = JSON.parse(rawData) as unknown
 
-      if (parsed && typeof parsed === 'object' && 'expiresAt' in parsed) {
-        const expiresAt = (parsed as any).expiresAt
+      if (isStoredPayload(parsed)) {
+        const expiresAt = parsed.expiresAt
         if (typeof expiresAt === 'number' && expiresAt <= Date.now()) {
           storageEnv(STORAGE_ENV.SESSION_STORAGE).removeItem(key)
           return undefined
         }
-        return 'value' in parsed ? (parsed as any).value : parsed
+        return 'value' in parsed ? parsed.value : parsed
       }
 
       return parsed as T
     } catch {
       return undefined
     }
-  }, [isSSR, key])
+  }, [isSSR, key, isValidInputs, isStoredPayload])
 
   // delete so it wont cause memory leaks
   useEffect(() => {

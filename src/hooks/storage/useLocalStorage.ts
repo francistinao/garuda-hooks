@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useCallback } from 'react'
 import { STORAGE_ENV, storageEnv } from '../../utils/storage/storage-env'
 
 interface UseLocalStorageReturn<T> {
@@ -42,7 +43,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): UseLocalStorag
           return valueToStore
         })
       } catch (error) {
-        throw new Error('Unexpected error. Please try again')
+        throw new Error(`Unexpected error. Please try again: ${error}`)
       }
     },
     [key],
@@ -59,7 +60,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): UseLocalStorag
       window.localStorage.removeItem(key)
       setStoredValue(initialValue)
     } catch (error) {
-      throw new Error('Unexpected error. Please try again')
+      throw new Error(`Unexpected error. Please try again: ${error}`)
     }
   }, [key, initialValue])
 
@@ -74,7 +75,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): UseLocalStorag
         }
         return undefined
       } catch (error) {
-        throw new Error('Unexpected error. Please try again')
+        throw new Error(`Unexpected error. Please try again: ${error}`)
       }
     },
     [key],
@@ -95,7 +96,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): UseLocalStorag
         }
         return [] as T[]
       } catch (error) {
-        throw new Error('Unexpected error. Please try again')
+        throw new Error(`Unexpected error. Please try again: ${error}`)
       }
     },
     [key],

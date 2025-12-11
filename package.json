@@ -13,7 +13,7 @@
     }
   },
   "scripts": {
-    "lint": "eslint \"src/**/*.{ts,tsx}\" \"__tests__/**/*.{ts,tsx}\"",
+    "lint": "eslint --no-error-on-unmatched-pattern \"src/**/*.{ts,tsx}\" \"__tests__/**/*.{ts,tsx}\"",
     "format": "prettier -c \"src/**/*.{ts,tsx}\" \"__tests__/**/*.{ts,tsx}\"",
     "format:write": "prettier -w \"src/**/*.{ts,tsx}\" \"__tests__/**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit -p tsconfig.json",
@@ -43,7 +43,11 @@
     "react-dom": "^19.2.1"
   },
   "sideEffects": false,
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "devDependencies": {
     "@commitlint/cli": "^20.2.0",
     "@commitlint/config-conventional": "^20.2.0",
