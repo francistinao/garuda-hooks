@@ -7,9 +7,9 @@
   "types": "dist/types/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.cjs",
-      "types": "./dist/types/index.d.ts"
+      "require": "./dist/cjs/index.cjs"
     }
   },
   "scripts": {
@@ -17,9 +17,9 @@
     "format": "prettier -c \"src/**/*.{ts,tsx}\" \"__tests__/**/*.{ts,tsx}\"",
     "format:write": "prettier -w \"src/**/*.{ts,tsx}\" \"__tests__/**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vitest run",
-    "test:watch": "vitest watch",
-    "test:cov": "vitest run --coverage",
+    "test": "vitest run --config vitest.config.mjs",
+    "test:watch": "vitest watch --config vitest.config.mjs",
+    "test:cov": "vitest run --coverage --config vitest.config.mjs",
     "clean": "rimraf dist",
     "build": "rimraf dist && rollup -c",
     "prepare": "husky",
