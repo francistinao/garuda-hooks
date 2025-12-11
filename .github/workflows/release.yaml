@@ -24,7 +24,7 @@ jobs:
           version: 10.10.0
 
       - name: Verify pnpm version
-        uses: pnpm --version
+        run: pnpm --version
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
