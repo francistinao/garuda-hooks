@@ -15,7 +15,7 @@
   "scripts": {
     "lint": "eslint --no-error-on-unmatched-pattern \"src/**/*.{ts,tsx}\" \"__tests__/**/*.{ts,tsx}\"",
     "format": "prettier -c \"src/**/*.{ts,tsx}\" \"__tests__/**/*.{ts,tsx}\"",
-    "format:write": "prettier -w \"src/**/*.{ts,tsx}\" \"__tests__/**/*.{ts,tsx}\"",
+    "format:write": "prettier -w \"src/**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run --config vitest.config.mjs",
     "test:watch": "vitest watch --config vitest.config.mjs",

@@ -35,7 +35,7 @@ describe('useNetwork', () => {
     vi.useFakeTimers()
     connectionListeners = new Map()
     windowListeners = new Map()
-    
+
     // Setup mock navigator with connection
     mockNavigator = {
       ...originalNavigator,
@@ -51,8 +51,8 @@ describe('useNetwork', () => {
         }),
         removeEventListener: vi.fn((type: string, _listener: () => void) => {
           connectionListeners.delete(type)
-        })
-      }
+        }),
+      },
     }
 
     // Mock window event listeners
@@ -72,7 +72,7 @@ describe('useNetwork', () => {
     Object.defineProperty(globalThis, 'navigator', {
       value: mockNavigator,
       configurable: true,
-      writable: true
+      writable: true,
     })
 
     Object.defineProperty(globalThis, 'window', {
@@ -80,10 +80,10 @@ describe('useNetwork', () => {
         ...originalWindow,
         addEventListener: mockAddEventListener,
         removeEventListener: mockRemoveEventListener,
-        dispatchEvent: mockDispatchEvent
+        dispatchEvent: mockDispatchEvent,
       },
       configurable: true,
-      writable: true
+      writable: true,
     })
   })
 
@@ -95,12 +95,12 @@ describe('useNetwork', () => {
     Object.defineProperty(globalThis, 'navigator', {
       value: originalNavigator,
       configurable: true,
-      writable: true
+      writable: true,
     })
     Object.defineProperty(globalThis, 'window', {
       value: originalWindow,
       configurable: true,
-      writable: true
+      writable: true,
     })
   })
 
@@ -108,11 +108,11 @@ describe('useNetwork', () => {
     it('should initialize with navigator.onLine status when available', async () => {
       mockNavigator.onLine = true
       const { result } = renderHook(() => useNetwork())
-      
+
       await act(async () => {
         await vi.advanceTimersByTimeAsync(0)
       })
-      
+
       expect(result.current.isOnline).toBe(true)
     })
 
@@ -121,27 +121,27 @@ describe('useNetwork', () => {
       Object.defineProperty(globalThis, 'navigator', {
         value: undefined,
         configurable: true,
-        writable: true
+        writable: true,
       })
-      
+
       const { result } = renderHook(() => useNetwork())
       expect(result.current.isOnline).toBe(true)
-      
+
       // Restore navigator
       Object.defineProperty(globalThis, 'navigator', {
         value: mockNavigator,
         configurable: true,
-        writable: true
+        writable: true,
       })
     })
 
     it('should initialize with default network values', async () => {
       const { result } = renderHook(() => useNetwork())
-      
+
       await act(async () => {
         await vi.advanceTimersByTimeAsync(0)
       })
-      
+
       expect(result.current.downlink).toBe(10)
       expect(result.current.effectiveType).toBe('4g')
       expect(result.current.saveData).toBe(false)
@@ -152,13 +152,13 @@ describe('useNetwork', () => {
   describe('Connection API availability', () => {
     it('should handle missing connection API gracefully', async () => {
       delete mockNavigator.connection
-      
+
       const { result } = renderHook(() => useNetwork())
-      
+
       await act(async () => {
         await vi.advanceTimersByTimeAsync(0)
       })
-      
+
       expect(result.current.isOnline).toBe(true)
       expect(result.current.downlink).toBe(null)
       expect(result.current.effectiveType).toBe('3g') // default fallback
@@ -166,13 +166,13 @@ describe('useNetwork', () => {
 
     it('should handle connection with missing properties', async () => {
       mockNavigator.connection = {}
-      
+
       const { result } = renderHook(() => useNetwork())
-      
+
       await act(async () => {
         await vi.advanceTimersByTimeAsync(0)
       })
-      
+
       expect(result.current.downlink).toBe(null)
       expect(result.current.effectiveType).toBe('3g')
       expect(result.current.saveData).toBe(false)
@@ -184,15 +184,15 @@ describe('useNetwork', () => {
         downlink: 5,
         effectiveType: '3g',
         saveData: true,
-        rtt: 100
+        rtt: 100,
       }
-      
+
       const { result } = renderHook(() => useNetwork())
-      
+
       await act(async () => {
         await vi.advanceTimersByTimeAsync(0)
       })
-      
+
       expect(result.current.downlink).toBe(5)
       expect(result.current.effectiveType).toBe('3g')
       expect(result.current.saveData).toBe(true)
@@ -204,39 +204,39 @@ describe('useNetwork', () => {
     it('should handle online event', async () => {
       mockNavigator.onLine = false
       const { result } = renderHook(() => useNetwork())
-      
+
       await act(async () => {
         await vi.advanceTimersByTimeAsync(0)
       })
-      
+
       // Simulate going online
       mockNavigator.onLine = true
       await act(async () => {
         const onlineListener = windowListeners.get('online')
         onlineListener?.(new Event('online'))
       })
-      
+
       expect(result.current.isOnline).toBe(true)
     })
 
     it('should handle offline event', async () => {
       mockNavigator.onLine = true
       const { result } = renderHook(() => useNetwork())
-      
+
       await act(async () => {
         await vi.advanceTimersByTimeAsync(0)
       })
-      
+
       // Verify initial online state
       expect(result.current.isOnline).toBe(true)
-      
+
       // Simulate going offline
       mockNavigator.onLine = false
       await act(async () => {
         const offlineListener = windowListeners.get('offline')
         offlineListener?.(new Event('offline'))
       })
-      
+
       expect(result.current.isOnline).toBe(false)
       expect(result.current.effectiveType).toBe('unknown')
       expect(result.current.saveData).toBe(false)
@@ -246,23 +246,23 @@ describe('useNetwork', () => {
   describe('Connection change events', () => {
     it('should handle connection quality changes', async () => {
       const { result } = renderHook(() => useNetwork())
-      
+
       await act(async () => {
         await vi.advanceTimersByTimeAsync(0)
       })
-      
+
       // Change connection quality
       if (mockNavigator.connection) {
         mockNavigator.connection.downlink = 1
         mockNavigator.connection.effectiveType = '2g'
         mockNavigator.connection.rtt = 200
       }
-      
+
       await act(async () => {
         const changeListener = connectionListeners.get('change')
         changeListener?.()
       })
-      
+
       expect(result.current.downlink).toBe(1)
       expect(result.current.effectiveType).toBe('2g')
       expect(result.current.rtt).toBe(200)
@@ -271,30 +271,30 @@ describe('useNetwork', () => {
     it('should dispatch custom networkQualityChange event when connection changes', async () => {
       const dispatchEventSpy = vi.spyOn(window, 'dispatchEvent')
       renderHook(() => useNetwork())
-      
+
       await act(async () => {
         await vi.advanceTimersByTimeAsync(0)
       })
-      
+
       // Change connection quality significantly
       if (mockNavigator.connection) {
         mockNavigator.connection.downlink = 0.5
         mockNavigator.connection.effectiveType = 'slow-2g'
       }
-      
+
       await act(async () => {
         const changeListener = connectionListeners.get('change')
         changeListener?.()
       })
-      
+
       expect(dispatchEventSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'networkQualityChange',
           detail: expect.objectContaining({
             downlink: 0.5,
-            effectiveType: 'slow-2g'
-          })
-        })
+            effectiveType: 'slow-2g',
+          }),
+        }),
       )
     })
   })
@@ -303,21 +303,21 @@ describe('useNetwork', () => {
     it('should detect online state changes via polling', async () => {
       mockNavigator.onLine = true
       const { result } = renderHook(() => useNetwork())
-      
+
       await act(async () => {
         await vi.advanceTimersByTimeAsync(0)
       })
-      
+
       expect(result.current.isOnline).toBe(true)
-      
+
       // Simulate navigator.onLine changing without event
       mockNavigator.onLine = false
-      
+
       await act(async () => {
         // Advance timers by exactly the polling duration once
         await vi.advanceTimersByTimeAsync(5000)
       })
-      
+
       expect(result.current.isOnline).toBe(false)
     })
   })
@@ -327,43 +327,43 @@ describe('useNetwork', () => {
       it('should return true for slow-2g', async () => {
         mockNavigator.connection!.effectiveType = 'slow-2g'
         mockNavigator.connection!.downlink = 1
-        
+
         const { result } = renderHook(() => useNetwork())
-        
+
         await act(async () => {
           await vi.advanceTimersByTimeAsync(0)
           const changeListener = connectionListeners.get('change')
           changeListener?.()
         })
-        
+
         expect(result.current.isSlowConnection?.()).toBe(true)
       })
 
       it('should return true for 2g', async () => {
         mockNavigator.connection!.effectiveType = '2g'
         mockNavigator.connection!.downlink = 1
-        
+
         const { result } = renderHook(() => useNetwork())
-        
+
         await act(async () => {
           await vi.advanceTimersByTimeAsync(0)
           const changeListener = connectionListeners.get('change')
           changeListener?.()
         })
-        
+
         expect(result.current.isSlowConnection?.()).toBe(true)
       })
 
       it('should return false for fast connections', async () => {
         mockNavigator.connection!.effectiveType = '4g'
         mockNavigator.connection!.downlink = 10
-        
+
         const { result } = renderHook(() => useNetwork())
-        
+
         await act(async () => {
           await vi.advanceTimersByTimeAsync(0)
         })
-        
+
         expect(result.current.isSlowConnection?.()).toBe(false)
       })
     })
@@ -371,23 +371,23 @@ describe('useNetwork', () => {
     describe('connectionQuality', () => {
       it('should return "offline" when not online', async () => {
         const { result } = renderHook(() => useNetwork())
-        
+
         await act(async () => {
           await vi.advanceTimersByTimeAsync(0)
         })
-        
+
         mockNavigator.onLine = false
         await act(async () => {
           const offlineListener = windowListeners.get('offline')
           offlineListener?.(new Event('offline'))
         })
-        
+
         expect(result.current.connectionQuality?.()).toBe('offline')
       })
 
       it('should return "excellent" for 4g', () => {
         const { result } = renderHook(() => useNetwork())
-        
+
         // Mock connection is already set to 4g in beforeEach, no async needed
         expect(result.current.connectionQuality?.()).toBe('excellent')
       })
@@ -398,19 +398,19 @@ describe('useNetwork', () => {
     it('should clean up event listeners on unmount', async () => {
       const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener')
       const connectionRemoveSpy = vi.fn()
-      
+
       if (mockNavigator.connection) {
         mockNavigator.connection.removeEventListener = connectionRemoveSpy
       }
-      
+
       const { unmount } = renderHook(() => useNetwork())
-      
+
       await act(async () => {
         await vi.advanceTimersByTimeAsync(0)
       })
-      
+
       unmount()
-      
+
       expect(removeEventListenerSpy).toHaveBeenCalledWith('online', expect.any(Function))
       expect(removeEventListenerSpy).toHaveBeenCalledWith('offline', expect.any(Function))
       expect(connectionRemoveSpy).toHaveBeenCalledWith('change', expect.any(Function))
@@ -419,13 +419,13 @@ describe('useNetwork', () => {
     it('should clear polling interval on unmount', async () => {
       const clearIntervalSpy = vi.spyOn(global, 'clearInterval')
       const { unmount } = renderHook(() => useNetwork())
-      
+
       await act(async () => {
         await vi.advanceTimersByTimeAsync(0)
       })
-      
+
       unmount()
-      
+
       expect(clearIntervalSpy).toHaveBeenCalled()
     })
   })
@@ -433,15 +433,15 @@ describe('useNetwork', () => {
   describe('Edge cases', () => {
     it('should handle missing queueMicrotask', () => {
       const originalQueueMicrotask = globalThis.queueMicrotask
-      
+
       // Replace with setTimeout fallback before deleting
       globalThis.queueMicrotask = undefined as any
-      
+
       const { result } = renderHook(() => useNetwork())
-      
+
       // Should still work with setTimeout fallback
       expect(result.current.isOnline).toBe(true)
-      
+
       // Restore original
       globalThis.queueMicrotask = originalQueueMicrotask
     })
@@ -450,17 +450,19 @@ describe('useNetwork', () => {
   describe('Type safety', () => {
     it('should handle generic type parameter', async () => {
       const { result } = renderHook(() => useNetwork<number>())
-      
+
       await act(async () => {
         await vi.advanceTimersByTimeAsync(0)
       })
-      
+
       // Should have valid result after initial load
       expect(result.current).toBeDefined()
       expect(result.current.isOnline).toBe(true)
-      
+
       // Type assertions - values should be numbers or null
-      expect(typeof result.current.downlink === 'number' || result.current.downlink === null).toBe(true)
+      expect(typeof result.current.downlink === 'number' || result.current.downlink === null).toBe(
+        true,
+      )
       expect(typeof result.current.rtt === 'number' || result.current.rtt === null).toBe(true)
     })
   })

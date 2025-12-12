@@ -1,3 +1,6 @@
 export * from './useClipboard'
 export * from './useFullscreen'
+export * from './useGeolocation'
 export * from './useMediaQuery'
+export * from './useNetwork'
+export * from './useIdle'
