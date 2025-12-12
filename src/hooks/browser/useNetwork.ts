@@ -157,6 +157,7 @@ export function useNetwork<T>(): UseNetworkResult<T> {
         connection.removeEventListener('change', handleConnectionChange)
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handleConnectionChange, handleOffline, handleOnline, updateNetworkInfo])
 
   return {
