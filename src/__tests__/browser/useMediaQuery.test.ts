@@ -49,9 +49,7 @@ describe('useMediaQuery', () => {
   it('returns defaultMatch when matchMedia is missing (SSR-like)', () => {
     window.matchMedia = undefined as unknown as typeof window.matchMedia
 
-    const { result } = renderHook(() =>
-      useMediaQuery('(min-width: 600px)', { defaultMatch: true }),
-    )
+    const { result } = renderHook(() => useMediaQuery('(min-width: 600px)', { defaultMatch: true }))
     expect(result.current.matches).toBe(true)
   })
 

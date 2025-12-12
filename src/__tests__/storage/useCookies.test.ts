@@ -87,4 +87,3 @@ describe('useCookie', () => {
     expect(setValue).toContain('max-age=3600')
   })
 })
-

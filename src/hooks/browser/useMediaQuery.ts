@@ -8,10 +8,7 @@ type MediaQueryOptions = {
 
 type UseMediaQueryReturn = { matches: boolean }
 
-export function useMediaQuery(
-  query: string,
-  options: MediaQueryOptions = {},
-): UseMediaQueryReturn {
+export function useMediaQuery(query: string, options: MediaQueryOptions = {}): UseMediaQueryReturn {
   const isSSR = typeof window === 'undefined'
   const { defaultMatch, ssrMatchMedia, initializeWithValue = true } = options ?? {}
 
@@ -22,21 +19,24 @@ export function useMediaQuery(
     }
     return window.matchMedia(query).matches
   }, [query, defaultMatch, ssrMatchMedia, isSSR])
-    
-  const attachListener = useCallback((media: MediaQueryList, onChange: EventListenerOrEventListenerObject) => {
-    try {
+
+  const attachListener = useCallback(
+    (media: MediaQueryList, onChange: EventListenerOrEventListenerObject) => {
+      try {
         media.addEventListener('change', onChange)
         return () => media.removeEventListener('change', onChange)
-    } catch {
+      } catch {
         // return no operation
         return () => {}
-    }
-  }, [])
+      }
+    },
+    [],
+  )
 
   const [matches, setMatches] = useState(() =>
-    initializeWithValue ? getMatch() : defaultMatch ?? false,
+    initializeWithValue ? getMatch() : (defaultMatch ?? false),
   )
-  
+
   useEffect(() => {
     if (isSSR || typeof window === 'undefined' || !window.matchMedia) return
     const media = window.matchMedia(query)

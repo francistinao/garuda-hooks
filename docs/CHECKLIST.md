@@ -3,7 +3,7 @@
 ## Storage
 - [x] useLocalStorage
 - [x] useSessionStorage
-- [ ] useCookies 
+- [x] useCookies 
 
 
 ## Browser
@@ -11,8 +11,8 @@
 - [x] useClipboard
 - [ ] useNetwork
 - [ ] useIdle
-- [ ] useFullscreen
-- [ ] useGeolocation
+- [x] useFullscreen
+- [x] useGeolocation
 - [ ] useOrientation
 - [ ] useColorScheme
 - [ ] useDocumentTitle

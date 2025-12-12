@@ -21,17 +21,17 @@ type StoredPayload<T> = {
 }
 
 /**
- * 
- * @param key 
- * 
- * @param initialValue 
+ *
+ * @param key
+ *
+ * @param initialValue
  * @returns T in tuple or object or undefine
  */
 
 export function useSessionStorage<T>(
   key: string,
   initialValue: T,
-  defaultTTL?: number
+  defaultTTL?: number,
 ): UseSessionStorageReturn<T> {
   const isSSR = typeof window === 'undefined' || !window
   // holds the setTimeout handler which will remove the session entry when TTL elapses
@@ -159,7 +159,7 @@ export function useSessionStorage<T>(
 
   const setValueWithTTL = useCallback(
     (next: T | ((prev: T) => T), overrideTtl: number) => {
-      const ttl = overrideTtl ?? defaultTTL;
+      const ttl = overrideTtl ?? defaultTTL
       if (isSSR) return
 
       if (!isValidInputs(key)) {
@@ -231,6 +231,6 @@ export function useSessionStorage<T>(
     setValue,
     removeValue,
     setValueWithTTL,
-    getStoredValue
+    getStoredValue,
   }
 }

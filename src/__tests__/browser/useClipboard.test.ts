@@ -57,4 +57,3 @@ describe('useClipboard', () => {
     expect(result.current.copied).toBe(false)
   })
 })
-
