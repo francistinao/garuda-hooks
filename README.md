@@ -104,6 +104,31 @@ npm run build
 - Mock browser APIs where needed (localStorage, matchMedia, IntersectionObserver)
 - `npm run test -- --watch` for watch mode
 
+## Documentation
+
+Comprehensive documentation for each hook is available in the `docs/` directory. Each hook includes:
+
+- **API Reference**: Complete TypeScript interfaces and method signatures
+- **Usage Examples**: React and Next.js implementation examples
+- **Best Practices**: Recommended patterns and common use cases
+- **SSR Considerations**: Server-side rendering safety guidelines
+
+### Available Hooks
+
+#### Storage Hooks
+- [`useLocalStorage`](./docs/useLocalStorage/) - Manage localStorage with SSR safety
+- [`useSessionStorage`](./docs/useSessionStorage/) - Manage sessionStorage with SSR safety
+- [`useCookies`](./docs/useCookies/) - Cookie management with TypeScript support
+
+#### Browser Hooks
+- [`useClipboard`](./docs/useClipboard/) - Copy content to clipboard with ref targeting
+- [`useFullscreen`](./docs/useFullscreen/) - Fullscreen API management
+- [`useGeolocation`](./docs/useGeolocation/) - Location tracking and geolocation API
+- [`useIdle`](./docs/useIdle/) - User idle state detection
+- [`useMediaQuery`](./docs/useMediaQuery/) - Responsive design with media queries
+- [`useNetwork`](./docs/useNetwork/) - Network status and connection monitoring
+- [`useOrientation`](./docs/useOrientation/) - Device orientation detection
+
 ## License
 
 MIT

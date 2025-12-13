@@ -17,15 +17,11 @@ describe('useIdle', () => {
     eventListeners[event].push(handler)
   })
 
-  const removeEventListener = vi.fn(
-    (event: string, handler: EventListener) => {
-      if (eventListeners[event]) {
-        eventListeners[event] = eventListeners[event].filter(
-          (h) => h !== handler
-        )
-      }
+  const removeEventListener = vi.fn((event: string, handler: EventListener) => {
+    if (eventListeners[event]) {
+      eventListeners[event] = eventListeners[event].filter((h) => h !== handler)
     }
-  )
+  })
 
   const triggerEvent = (eventName: string) => {
     if (eventListeners[eventName]) {
@@ -91,9 +87,9 @@ describe('useIdle', () => {
     it('should reset idle state on mousemove', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
-      
+
       // Simulate time passing
       act(() => {
         vi.mocked(Date.now).mockReturnValue(now + 2000)
@@ -117,7 +113,7 @@ describe('useIdle', () => {
     it('should reset idle state on keypress', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       act(() => {
@@ -137,7 +133,7 @@ describe('useIdle', () => {
     it('should reset idle state on keydown', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       act(() => {
@@ -157,7 +153,7 @@ describe('useIdle', () => {
     it('should reset idle state on mousedown', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       act(() => {
@@ -179,7 +175,7 @@ describe('useIdle', () => {
     it('should transition to idle after 3 minutes of inactivity', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       expect(result.current.isIdle).toBe(false)
@@ -204,7 +200,7 @@ describe('useIdle', () => {
     it('should update idle time every second', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       act(() => {
@@ -229,7 +225,7 @@ describe('useIdle', () => {
     it('should maintain idle state once achieved until activity', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       // Become idle
@@ -277,14 +273,14 @@ describe('useIdle', () => {
     it('should not update idle time when paused', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       act(() => {
         vi.mocked(Date.now).mockReturnValue(now + 1000)
         vi.advanceTimersByTime(1000)
       })
-      
+
       const idleTimeBeforePause = result.current.idleTime
 
       act(() => {
@@ -345,7 +341,7 @@ describe('useIdle', () => {
     it('should reset activity on resume', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       act(() => {
@@ -371,7 +367,7 @@ describe('useIdle', () => {
     it('should reset idle state when reset is called', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       // Become idle
@@ -449,7 +445,7 @@ describe('useIdle', () => {
     it('should handle rapid activity events', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       act(() => {
@@ -472,7 +468,7 @@ describe('useIdle', () => {
     it('should handle pause/resume cycles', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       for (let i = 0; i < 5; i++) {
@@ -499,7 +495,7 @@ describe('useIdle', () => {
       })
 
       // Should only have 4 listeners attached (initial mount only)
-      const uniqueHandlers = new Set(addEventListener.mock.calls.map(call => call[0]))
+      const uniqueHandlers = new Set(addEventListener.mock.calls.map((call) => call[0]))
       expect(uniqueHandlers.size).toBe(4)
     })
 
@@ -532,14 +528,14 @@ describe('useIdle', () => {
 
       // Verify no memory leaks - each pause should clear interval
       expect(vi.mocked(global.clearInterval).mock.calls.length).toBe(
-        vi.mocked(global.clearInterval).mock.calls.filter(call => call[0] != null).length
+        vi.mocked(global.clearInterval).mock.calls.filter((call) => call[0] != null).length,
       )
     })
 
     it('should maintain consistent state across re-renders', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result, rerender } = renderHook(() => useIdle())
 
       act(() => {
@@ -563,7 +559,7 @@ describe('useIdle', () => {
     it('should handle very long idle periods', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       act(() => {
@@ -578,7 +574,7 @@ describe('useIdle', () => {
     it('should handle activity immediately after becoming idle', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       act(() => {
@@ -600,7 +596,7 @@ describe('useIdle', () => {
     it('should handle multiple event types in sequence', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       act(() => {
@@ -615,7 +611,7 @@ describe('useIdle', () => {
           vi.mocked(Date.now).mockReturnValue(now + 3000 + index * 100)
           triggerEvent(event)
         })
-        
+
         expect(result.current.isIdle).toBe(false)
         expect(result.current.idleTime).toBe(0)
       })
@@ -624,7 +620,7 @@ describe('useIdle', () => {
     it('should handle state when timer is paused during idle', () => {
       const now = Date.now()
       vi.mocked(Date.now).mockReturnValue(now)
-      
+
       const { result } = renderHook(() => useIdle())
 
       // Become idle
@@ -657,18 +653,18 @@ describe('useIdle', () => {
   describe('SSR compatibility', () => {
     it('should handle SSR environment gracefully', async () => {
       vi.clearAllMocks()
-      
+
       // Reset modules to clear cached imports
       vi.resetModules()
-      
+
       // Mock isSSR to return true
       vi.doMock('../../helpers/is-ssr', () => ({
         isSSR: true,
       }))
-      
+
       // Import the hook after setting up the SSR mock
       const { default: useIdleSSR } = await import('../../hooks/browser/useIdle')
-      
+
       const { result } = renderHook(() => useIdleSSR())
 
       expect(result.current.isIdle).toBe(false)
@@ -691,7 +687,7 @@ describe('useIdle', () => {
 
       // No listeners should be attached in SSR
       expect(addEventListener).not.toHaveBeenCalled()
-      
+
       // Restore the mock
       vi.doUnmock('../../helpers/is-ssr')
       vi.doMock('../../helpers/is-ssr', () => ({
