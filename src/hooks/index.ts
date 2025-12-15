@@ -10,3 +10,6 @@ export * from '../hooks/browser/useFullscreen'
 export * from '../hooks/browser/useGeolocation'
 export * from '../hooks/browser/useIdle'
 export * from '../hooks/browser/useNetwork'
+export * from '../hooks/browser/useColorScheme'
+export * from '../hooks/browser/useOrientation'
+

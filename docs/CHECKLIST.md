@@ -9,12 +9,12 @@
 ## Browser
 - [x] useMediaQuery
 - [x] useClipboard
-- [ ] useNetwork
-- [ ] useIdle
+- [x] useNetwork
+- [x] useIdle
 - [x] useFullscreen
 - [x] useGeolocation
-- [ ] useOrientation
-- [ ] useColorScheme
+- [x] useOrientation
+- [x] useColorScheme
 - [ ] useDocumentTitle
 - [ ] useFavicon
 - [ ] useHash

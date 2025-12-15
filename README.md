@@ -122,6 +122,7 @@ Comprehensive documentation for each hook is available in the `docs/` directory.
 
 #### Browser Hooks
 - [`useClipboard`](./docs/useClipboard/) - Copy content to clipboard with ref targeting
+- [`useColorScheme`](./docs/useColorScheme/) - Color scheme management (light/dark/system themes)
 - [`useFullscreen`](./docs/useFullscreen/) - Fullscreen API management
 - [`useGeolocation`](./docs/useGeolocation/) - Location tracking and geolocation API
 - [`useIdle`](./docs/useIdle/) - User idle state detection
