@@ -32,9 +32,11 @@ import { useClipboard } from 'garuda-hooks'
 function CopyTextExample() {
   const { ref, copied, copy } = useClipboard()
 
+  const preRef = ref as RefObject<HTMLElement | null>
+
   return (
     <div>
-      <p ref={ref}>This text will be copied to clipboard!</p>
+      <p ref={preRef}>This text will be copied to clipboard!</p>
       <button onClick={copy}>
         {copied ? 'Copied!' : 'Copy Text'}
       </button>
@@ -49,6 +51,8 @@ function CopyTextExample() {
 function CodeBlockWithCopy() {
   const { ref, copied, copy } = useClipboard()
 
+  const preRef = ref as RefObject<HTMLElement | null> //for typesafety
+
   const codeSnippet = `
 function greet(name: string) {
   return \`Hello, \${name}!\`
@@ -58,7 +62,7 @@ function greet(name: string) {
   return (
     <div className="relative">
       <pre 
-        ref={ref} 
+        ref={preRef} 
         className="bg-gray-100 p-4 rounded overflow-x-auto"
       >
         <code>{codeSnippet}</code>
@@ -84,13 +88,15 @@ function greet(name: string) {
 ```tsx
 function ShareUrlButton() {
   const { ref, copied, copy } = useClipboard()
+  
+  const preRef = ref as RefObject<HTMLElement | null>
 
   // Hidden element containing the URL
   const currentUrl = typeof window !== 'undefined' ? window.location.href : ''
 
   return (
     <div>
-      <span ref={ref} style={{ display: 'none' }}>
+      <span ref={preRef} style={{ display: 'none' }}>
         {currentUrl}
       </span>
       

@@ -130,6 +130,8 @@ Comprehensive documentation for each hook is available in the `docs/` directory.
 - [`useNetwork`](./docs/useNetwork/) - Network status and connection monitoring
 - [`useOrientation`](./docs/useOrientation/) - Device orientation detection
 
+## REMAINING HOOKS ARE WIP
+
 ## License
 
 MIT
