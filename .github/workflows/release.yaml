@@ -18,28 +18,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: "pnpm"
           registry-url: "https://registry.npmjs.org/"
 
       - name: Setup PNPM
-        run: npm install -g pnpm@10.10.0
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
 
       - name: Verify PNPM
         run: pnpm --version
 
-      - name: Get PNPM store path
-        id: pnpm-store
-        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Cache PNPM store
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Run tests
+        run: pnpm test
 
       - name: Build
         env:
@@ -47,7 +47,7 @@ jobs:
           NODE_OPTIONS: "--max-old-space-size=4096"
         run: pnpm build
 
-      - name: Publish to npm
+      - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public
+        run: npm publish --access public --ignore-scripts
