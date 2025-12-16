@@ -18,21 +18,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: "pnpm"
           registry-url: "https://registry.npmjs.org/"
 
-      - name: Enable Corepack & ensure pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.10.0 --activate
-          pnpm --version
+      - name: Setup PNPM
+        run: npm install -g pnpm@10.10.0
 
-      - name: Cache pnpm store
+      - name: Verify PNPM
+        run: pnpm --version
+
+      - name: Get PNPM store path
+        id: pnpm-store
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Cache PNPM store
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.pnpm-store
-            node_modules
+          path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
@@ -46,7 +47,7 @@ jobs:
           NODE_OPTIONS: "--max-old-space-size=4096"
         run: pnpm build
 
-      - name: Publish
+      - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --ignore-scripts
+        run: npm publish --access public
