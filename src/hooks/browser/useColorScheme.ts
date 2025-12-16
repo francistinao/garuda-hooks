@@ -72,12 +72,15 @@ export function useColorScheme(options: Options = {}): UseColorSchemeResult {
   }, [enableSystem])
 
   // Resolve the actual mode to use
-  const resolveMode = useCallback((mode: 'light' | 'dark' | 'system', systemDark: boolean): 'light' | 'dark' => {
-    if (mode === 'system') {
-      return systemDark ? 'dark' : 'light'
-    }
-    return mode
-  }, [])
+  const resolveMode = useCallback(
+    (mode: 'light' | 'dark' | 'system', systemDark: boolean): 'light' | 'dark' => {
+      if (mode === 'system') {
+        return systemDark ? 'dark' : 'light'
+      }
+      return mode
+    },
+    [],
+  )
 
   const getStorage = useCallback(() => {
     if (isSSR) return null
@@ -95,28 +98,33 @@ export function useColorScheme(options: Options = {}): UseColorSchemeResult {
     try {
       const stored = storageInstance.getItem(storageKey)
       if (!stored) return null
-      
+
       const parsed = JSON.parse(stored)
       if (typeof parsed === 'string' && ['light', 'dark', 'system'].includes(parsed)) {
         return parsed as 'light' | 'dark' | 'system'
       }
-      if (parsed && typeof parsed.mode === 'string' && ['light', 'dark', 'system'].includes(parsed.mode)) {
+      if (
+        parsed &&
+        typeof parsed.mode === 'string' &&
+        ['light', 'dark', 'system'].includes(parsed.mode)
+      ) {
         return parsed.mode as 'light' | 'dark' | 'system'
       }
-    } catch {
-    }
+    } catch {}
     return null
   }, [storageKey, getStorage])
 
-  const saveToStorage = useCallback((mode: 'light' | 'dark' | 'system') => {
-    const storageInstance = getStorage()
-    if (!storageInstance) return
+  const saveToStorage = useCallback(
+    (mode: 'light' | 'dark' | 'system') => {
+      const storageInstance = getStorage()
+      if (!storageInstance) return
 
-    try {
-      storageInstance.setItem(storageKey, JSON.stringify({ mode, timestamp: Date.now() }))
-    } catch {
-    }
-  }, [storageKey, getStorage])
+      try {
+        storageInstance.setItem(storageKey, JSON.stringify({ mode, timestamp: Date.now() }))
+      } catch {}
+    },
+    [storageKey, getStorage],
+  )
 
   useEffect(() => {
     if (isSSR || state.initialized) return
@@ -127,7 +135,7 @@ export function useColorScheme(options: Options = {}): UseColorSchemeResult {
     const initialResolved = resolveMode(initialMode, systemDark)
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       mode: initialMode,
       resolvedMode: initialResolved,
@@ -141,9 +149,9 @@ export function useColorScheme(options: Options = {}): UseColorSchemeResult {
     if (isSSR || !enableSystem) return
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    
+
     const handleChange = (e: MediaQueryListEvent) => {
-      setState(prev => {
+      setState((prev) => {
         const newResolved = resolveMode(prev.mode, e.matches)
         return {
           ...prev,
@@ -157,20 +165,23 @@ export function useColorScheme(options: Options = {}): UseColorSchemeResult {
     return () => mediaQuery.removeEventListener('change', handleChange)
   }, [enableSystem, resolveMode])
 
-  const setMode = useCallback((newMode: 'light' | 'dark' | 'system') => {
-    setState(prev => {
-      const newResolved = resolveMode(newMode, prev.isSystemDark)
-      return {
-        ...prev,
-        mode: newMode,
-        resolvedMode: newResolved,
-      }
-    })
-    saveToStorage(newMode)
-  }, [resolveMode, saveToStorage])
+  const setMode = useCallback(
+    (newMode: 'light' | 'dark' | 'system') => {
+      setState((prev) => {
+        const newResolved = resolveMode(newMode, prev.isSystemDark)
+        return {
+          ...prev,
+          mode: newMode,
+          resolvedMode: newResolved,
+        }
+      })
+      saveToStorage(newMode)
+    },
+    [resolveMode, saveToStorage],
+  )
 
   const toggleMode = useCallback(() => {
-    setState(prev => {
+    setState((prev) => {
       const newMode = prev.resolvedMode === 'light' ? 'dark' : 'light'
       saveToStorage(newMode)
       return {
@@ -181,22 +192,28 @@ export function useColorScheme(options: Options = {}): UseColorSchemeResult {
     })
   }, [saveToStorage])
 
-  const setColor = useCallback((scheme: 'light' | 'dark', key: keyof ColorPalette, value: string) => {
-    setState(prev => ({
-      ...prev,
-      palettes: {
-        ...prev.palettes,
-        [scheme]: {
-          ...prev.palettes[scheme],
-          [key]: value,
+  const setColor = useCallback(
+    (scheme: 'light' | 'dark', key: keyof ColorPalette, value: string) => {
+      setState((prev) => ({
+        ...prev,
+        palettes: {
+          ...prev.palettes,
+          [scheme]: {
+            ...prev.palettes[scheme],
+            [key]: value,
+          },
         },
-      },
-    }))
-  }, [])
+      }))
+    },
+    [],
+  )
 
-  const getColor = useCallback((key: keyof ColorPalette): string => {
-    return state.palettes[state.resolvedMode][key]
-  }, [state.palettes, state.resolvedMode])
+  const getColor = useCallback(
+    (key: keyof ColorPalette): string => {
+      return state.palettes[state.resolvedMode][key]
+    },
+    [state.palettes, state.resolvedMode],
+  )
 
   const resetScheme = useCallback(() => {
     const storageInstance = getStorage()
@@ -211,7 +228,7 @@ export function useColorScheme(options: Options = {}): UseColorSchemeResult {
     const systemDark = getSystemPreference()
     const resolvedDefault = resolveMode(defaultMode, systemDark)
 
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       mode: defaultMode,
       resolvedMode: resolvedDefault,

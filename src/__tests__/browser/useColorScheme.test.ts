@@ -117,9 +117,7 @@ describe('useColorScheme', () => {
     })
 
     it('should initialize with custom default mode', async () => {
-      const { result } = renderHook(() => 
-        useColorScheme({ defaultMode: 'dark' })
-      )
+      const { result } = renderHook(() => useColorScheme({ defaultMode: 'dark' }))
 
       await act(async () => {
         await vi.runAllTimersAsync()
@@ -139,9 +137,7 @@ describe('useColorScheme', () => {
         dark: { primary: '#111111', secondary: '#222222' },
       }
 
-      const { result } = renderHook(() => 
-        useColorScheme({ themes: customThemes })
-      )
+      const { result } = renderHook(() => useColorScheme({ themes: customThemes }))
 
       await act(async () => {
         await vi.runAllTimersAsync()
@@ -154,9 +150,7 @@ describe('useColorScheme', () => {
       // Set system to prefer dark
       ;(window.matchMedia as any).trigger(true)
 
-      const { result } = renderHook(() => 
-        useColorScheme({ defaultMode: 'system' })
-      )
+      const { result } = renderHook(() => useColorScheme({ defaultMode: 'system' }))
 
       await act(async () => {
         await vi.runAllTimersAsync()
@@ -185,8 +179,8 @@ describe('useColorScheme', () => {
     it('should use sessionStorage when specified', async () => {
       window.sessionStorage.setItem('theme-key', JSON.stringify({ mode: 'dark' }))
 
-      const { result } = renderHook(() => 
-        useColorScheme({ storage: 'session', storageKey: 'theme-key' })
+      const { result } = renderHook(() =>
+        useColorScheme({ storage: 'session', storageKey: 'theme-key' }),
       )
 
       await act(async () => {
@@ -220,7 +214,7 @@ describe('useColorScheme', () => {
 
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         'color-scheme',
-        expect.stringContaining('"mode":"dark"')
+        expect.stringContaining('"mode":"dark"'),
       )
     })
   })
@@ -239,9 +233,7 @@ describe('useColorScheme', () => {
     })
 
     it('should toggle between light and dark with toggleMode', async () => {
-      const { result } = renderHook(() => 
-        useColorScheme({ defaultMode: 'light' })
-      )
+      const { result } = renderHook(() => useColorScheme({ defaultMode: 'light' }))
 
       await act(async () => {
         await vi.runAllTimersAsync()
@@ -260,9 +252,7 @@ describe('useColorScheme', () => {
     })
 
     it('should react to system preference changes when in system mode', async () => {
-      const { result } = renderHook(() => 
-        useColorScheme({ defaultMode: 'system' })
-      )
+      const { result } = renderHook(() => useColorScheme({ defaultMode: 'system' }))
 
       await act(async () => {
         await vi.runAllTimersAsync()
@@ -294,9 +284,7 @@ describe('useColorScheme', () => {
     })
 
     it('should get colors for current mode', async () => {
-      const { result } = renderHook(() => 
-        useColorScheme({ defaultMode: 'dark' })
-      )
+      const { result } = renderHook(() => useColorScheme({ defaultMode: 'dark' }))
 
       await act(async () => {
         await vi.runAllTimersAsync()
@@ -307,9 +295,7 @@ describe('useColorScheme', () => {
     })
 
     it('should update colors for correct scheme', async () => {
-      const { result } = renderHook(() => 
-        useColorScheme({ defaultMode: 'light' })
-      )
+      const { result } = renderHook(() => useColorScheme({ defaultMode: 'light' }))
 
       await act(async () => {
         await vi.runAllTimersAsync()
@@ -330,9 +316,7 @@ describe('useColorScheme', () => {
 
   describe('reset functionality', () => {
     it('should reset scheme to defaults', async () => {
-      const { result } = renderHook(() => 
-        useColorScheme({ defaultMode: 'light' })
-      )
+      const { result } = renderHook(() => useColorScheme({ defaultMode: 'light' }))
 
       await act(async () => {
         await vi.runAllTimersAsync()
@@ -354,8 +338,8 @@ describe('useColorScheme', () => {
 
   describe('edge cases', () => {
     it('should handle disabled system preference', async () => {
-      const { result } = renderHook(() => 
-        useColorScheme({ enableSystem: false, defaultMode: 'system' })
+      const { result } = renderHook(() =>
+        useColorScheme({ enableSystem: false, defaultMode: 'system' }),
       )
 
       await act(async () => {
@@ -393,7 +377,8 @@ describe('useColorScheme', () => {
 
     it('should cleanup media query listeners on unmount', async () => {
       const removeEventListenerSpy = vi.fn()
-      ;(window.matchMedia('(prefers-color-scheme: dark)') as any).removeEventListener = removeEventListenerSpy
+      ;(window.matchMedia('(prefers-color-scheme: dark)') as any).removeEventListener =
+        removeEventListenerSpy
 
       const { unmount } = renderHook(() => useColorScheme())
 
@@ -409,12 +394,12 @@ describe('useColorScheme', () => {
 
   describe('edge cases continued', () => {
     it('should handle partial theme customization', async () => {
-      const { result } = renderHook(() => 
-        useColorScheme({ 
-          themes: { 
-            light: { primary: '#CUSTOM' } // Only override primary
-          } 
-        })
+      const { result } = renderHook(() =>
+        useColorScheme({
+          themes: {
+            light: { primary: '#CUSTOM' }, // Only override primary
+          },
+        }),
       )
 
       await act(async () => {

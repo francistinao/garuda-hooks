@@ -1,17 +1,14 @@
-import path from 'node:path'
 import typescript from '@rollup/plugin-typescript'
-import commonjs from '@rollup/plugin-commonjs'
-import resolve from '@rollup/plugin-node-resolve'
-import terser from '@rollup/plugin-terser'
 import dts from 'rollup-plugin-dts'
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
+const pkg = require('./package.json')
 
 const input = 'src/index.ts'
-const external = ['react', 'react-dom', 'next']
 
-const basePlugins = [
-  resolve({ extensions: ['.js', '.ts', '.tsx'] }),
-  commonjs(),
-  typescript({ tsconfig: './tsconfig.build.json' })
+const external = [
+  ...Object.keys(pkg.dependencies || {}),
+  ...Object.keys(pkg.peerDependencies || {}),
 ]
 
 export default [
@@ -19,15 +16,29 @@ export default [
     input,
     external,
     output: [
-      { file: 'dist/esm/index.js', format: 'esm', sourcemap: true },
-      { file: 'dist/cjs/index.cjs', format: 'cjs', sourcemap: true }
+      {
+        file: 'dist/esm/index.js',
+        format: 'esm',
+        sourcemap: true,
+      },
+      {
+        file: 'dist/cjs/index.cjs',
+        format: 'cjs',
+        sourcemap: true,
+      },
     ],
-    plugins: [...basePlugins, terser()]
+    plugins: [
+      typescript({
+        tsconfig: './tsconfig.rollup.json',
+      })
+      ,
+    ],
   },
+
   {
-    input,
+    input: 'dist/types/index.d.ts',
+    output: [{ file: 'dist/index.d.ts', format: 'es' }],
+    plugins: [dts()],
     external,
-    output: { file: 'dist/types/index.d.ts', format: 'esm' },
-    plugins: [dts()]
-  }
+  },
 ]

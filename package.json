@@ -20,10 +20,12 @@
     "test": "vitest run --config vitest.config.mjs",
     "test:watch": "vitest watch --config vitest.config.mjs",
     "test:cov": "vitest run --coverage --config vitest.config.mjs",
-    "clean": "rimraf dist",
-    "build": "rimraf dist && rollup -c",
     "prepare": "husky",
-    "prepublishOnly": "npm run lint && npm run typecheck && npm run test && npm run build"
+    "prepublishOnly": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "clean": "rm -rf dist",
+    "build:types": "tsc -p tsconfig.build.json",
+    "build:js": "rollup -c",
+    "build": "pnpm clean && pnpm build:types && pnpm build:js"
   },
   "keywords": [
     "typescript-first",

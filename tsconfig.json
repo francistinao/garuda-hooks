@@ -11,8 +11,8 @@
     "allowSyntheticDefaultImports": true,
     "types": ["vitest/globals", "node"],
     "forceConsistentCasingInFileNames": true,
-    "noEmit": false,
-    "declaration": false
+
+    "noEmit": true
   },
   "include": ["src", "__tests__", "vitest.config.ts"]
 }
