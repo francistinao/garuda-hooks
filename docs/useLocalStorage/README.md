@@ -27,13 +27,20 @@ function useLocalStorage<T>(key: string, initialValue: T): UseLocalStorageReturn
 
 ## Usage Examples
 
+> The hook returns an object. Destructure with `{}` and alias `storedValue`
+> to a domain name (e.g., `user`, `cart`, `prefs`).
+
 ### Basic Usage
 
 ```tsx
 import { useLocalStorage } from 'garuda-hooks'
 
 function UserProfile() {
-  const [user, setUser, removeUser] = useLocalStorage('user', { name: '', email: '' })
+  const {
+    storedValue: user,
+    setValue: setUser,
+    removeValue: removeUser,
+  } = useLocalStorage('user', { name: '', email: '' })
 
   return (
     <div>
@@ -175,9 +182,12 @@ export default function Profile() {
 import { useLocalStorage } from 'garuda-hooks'
 
 export default function ClientComponent() {
-  const [preferences, setPreferences] = useLocalStorage('preferences', {
+  const {
+    storedValue: preferences,
+    setValue: setPreferences,
+  } = useLocalStorage('preferences', {
     colorScheme: 'auto',
-    fontSize: 'medium'
+    fontSize: 'medium',
   })
 
   return (
@@ -205,9 +215,9 @@ interface UserPreferences {
   sidebar: boolean
 }
 
-const [prefs] = useLocalStorage<UserPreferences>('prefs', {
+const { storedValue: prefs } = useLocalStorage<UserPreferences>('prefs', {
   theme: 'light',
-  sidebar: true
+  sidebar: true,
 })
 ```
 
@@ -216,7 +226,7 @@ The hook handles JSON parsing errors gracefully, but you can add additional vali
 
 ```tsx
 function SafeDataStorage() {
-  const [data, setData] = useLocalStorage('important-data', [])
+  const { storedValue: data, setValue: setData } = useLocalStorage('important-data', [])
 
   const addData = (newItem: unknown) => {
     if (!newItem || typeof newItem !== 'object') {
@@ -238,7 +248,7 @@ import { useMemo, useCallback } from 'react'
 import { debounce } from 'lodash' // or your preferred debounce utility
 
 function HighFrequencyData() {
-  const [data, setData] = useLocalStorage('high-freq-data', '')
+  const { storedValue: data, setValue: setData } = useLocalStorage('high-freq-data', '')
 
   const debouncedSetData = useMemo(
     () => debounce(setData, 500),
@@ -267,7 +277,10 @@ interface CartItem {
 }
 
 function ShoppingCart() {
-  const [cart, setCart] = useLocalStorage<CartItem[]>('shopping-cart', [])
+  const { storedValue: cart, setValue: setCart } = useLocalStorage<CartItem[]>(
+    'shopping-cart',
+    [],
+  )
 
   const addToCart = (item: Omit<CartItem, 'quantity'>) => {
     setCart(prev => {
@@ -298,10 +311,10 @@ function ShoppingCart() {
 
 ```tsx
 function PersistentForm() {
-  const [formData, setFormData] = useLocalStorage('form-draft', {
+  const { storedValue: formData, setValue: setFormData } = useLocalStorage('form-draft', {
     name: '',
     email: '',
-    message: ''
+    message: '',
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -342,7 +355,7 @@ Handle localStorage quota limits:
 
 ```tsx
 function QuotaAwareStorage() {
-  const [data, setData] = useLocalStorage('large-data', [])
+  const { storedValue: data, setValue: setData } = useLocalStorage('large-data', [])
 
   const addDataSafely = (newItem: any) => {
     try {
