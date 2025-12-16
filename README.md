@@ -32,7 +32,7 @@ pnpm add garuda-hooks
 import { useLocalStorage } from 'garuda-hooks'
 
 function Example() {
-  const [value, setValue, remove] = useLocalStorage('key', 'hello')
+  const { value, setValue, remove } = useLocalStorage('key', 'hello')
   return (
     <div>
       <p>{value}</p>
