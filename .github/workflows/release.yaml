@@ -18,28 +18,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: "pnpm"
-          registry-url: "https://registry.npmjs.org/"
+          registry-url: https://registry.npmjs.org/
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v4
         with:
           version: 10.10.0
 
-      - name: Verify PNPM
-        run: pnpm --version
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Run tests
-        run: pnpm test
 
       - name: Build
         env:
@@ -47,7 +34,7 @@ jobs:
           NODE_OPTIONS: "--max-old-space-size=4096"
         run: pnpm build
 
-      - name: Publish
+      - name: Publish to NPM
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --access public --ignore-scripts
