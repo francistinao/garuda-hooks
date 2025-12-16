@@ -14,12 +14,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node & PNPM
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: "pnpm"
           registry-url: "https://registry.npmjs.org/"
+
+      - name: Enable PNPM via Corepack
+        run: corepack enable && corepack prepare pnpm@10.10.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -33,4 +36,4 @@ jobs:
       - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public --ignore-scripts
+        run: npm publish --ignore-scripts
