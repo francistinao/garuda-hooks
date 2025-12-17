@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { isSSR } from '../../helpers/is-ssr'
 
 interface Options {
-    // when component stops existing, putting document back to what it is before (document.title)
+  // when component stops existing, putting document back to what it is before (document.title)
   restoreOnUnmount: boolean
 }
 

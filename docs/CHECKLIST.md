@@ -15,8 +15,8 @@
 - [x] useGeolocation
 - [x] useOrientation
 - [x] useColorScheme
-- [ ] useDocumentTitle
-- [ ] useFavicon
+- [x] useDocumentTitle
+- [x] useFavicon
 - [ ] useHash
 - [ ] useScrollLock
 
