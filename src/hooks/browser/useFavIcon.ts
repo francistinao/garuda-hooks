@@ -1,11 +1,11 @@
 /**
  *  useFavIcon:
- * 
+ *
  *  lets a component read, set, updated, and optionally restore the page's favicon
  * which is in a format of <link rel="icon">
- * 
+ *
  * React component-based icons are also considered by converting it first to svg
- * 
+ *
  */
 
 import { useState, useEffect, useCallback, ReactElement, useRef, isValidElement } from 'react'
@@ -55,7 +55,7 @@ export function useFavIcon({
     return link
   }, [])
 
-  // convert from react element icon type to svg 
+  // convert from react element icon type to svg
   // sole purpose of converting to favicon since favicon is svg
   const convertIconToFavicon = useCallback((icon: ReactElement): string => {
     const svg = renderToStaticMarkup(icon)

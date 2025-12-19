@@ -24,14 +24,14 @@ describe('useFavIcon', () => {
   beforeEach(() => {
     // Mock DOM environment
     vi.spyOn(isSSRModule, 'isSSR', 'get').mockReturnValue(false)
-    
+
     // Store original head and favicon
     originalHead = document.head
     originalFavIcon = document.querySelector('link[rel~="icon"]')
-    
+
     // Clear any existing favicon links
-    document.querySelectorAll('link[rel~="icon"]').forEach(link => link.remove())
-    
+    document.querySelectorAll('link[rel~="icon"]').forEach((link) => link.remove())
+
     // Mock queueMicrotask
     global.queueMicrotask = vi.fn((callback) => {
       callback()
@@ -40,12 +40,12 @@ describe('useFavIcon', () => {
 
   afterEach(() => {
     // Restore original state
-    document.querySelectorAll('link[rel~="icon"]').forEach(link => link.remove())
-    
+    document.querySelectorAll('link[rel~="icon"]').forEach((link) => link.remove())
+
     if (originalFavIcon) {
       document.head.appendChild(originalFavIcon)
     }
-    
+
     vi.restoreAllMocks()
   })
 
@@ -482,7 +482,8 @@ describe('useFavIcon', () => {
     })
 
     it('handles data URI icons', () => {
-      const dataUri = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+      const dataUri =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
 
       const { result } = renderHook(() =>
         useFavIcon({
@@ -569,9 +570,9 @@ describe('useFavIcon', () => {
     })
 
     it('handles dynamic imports and lazy loading', async () => {
-      const dynamicIcon = React.createElement('svg', { 
+      const dynamicIcon = React.createElement('svg', {
         viewBox: '0 0 32 32',
-        children: 'Dynamic Icon'
+        children: 'Dynamic Icon',
       })
 
       const { result } = renderHook(() =>

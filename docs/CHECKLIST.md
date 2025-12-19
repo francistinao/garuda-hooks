@@ -17,7 +17,7 @@
 - [x] useColorScheme
 - [x] useDocumentTitle
 - [x] useFavicon
-- [ ] useHash
+- [x] useHash
 - [ ] useScrollLock
 
 ## DOM
