@@ -123,8 +123,11 @@ Comprehensive documentation for each hook is available in the `docs/` directory.
 #### Browser Hooks
 - [`useClipboard`](./docs/useClipboard/) - Copy content to clipboard with ref targeting
 - [`useColorScheme`](./docs/useColorScheme/) - Color scheme management (light/dark/system themes)
+- [`useDocumentTitle`](./docs/useDocumentTitle/) - Dynamic document title management
+- [`useFavIcon`](./docs/useFavIcon/) - Dynamic favicon management
 - [`useFullscreen`](./docs/useFullscreen/) - Fullscreen API management
 - [`useGeolocation`](./docs/useGeolocation/) - Location tracking and geolocation API
+- [`useHash`](./docs/useHash/) - URL hash management and navigation
 - [`useIdle`](./docs/useIdle/) - User idle state detection
 - [`useMediaQuery`](./docs/useMediaQuery/) - Responsive design with media queries
 - [`useNetwork`](./docs/useNetwork/) - Network status and connection monitoring

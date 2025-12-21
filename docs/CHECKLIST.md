@@ -18,7 +18,6 @@
 - [x] useDocumentTitle
 - [x] useFavicon
 - [x] useHash
-- [ ] useScrollLock
 
 ## DOM
 - [ ] useClickOutside
@@ -27,7 +26,7 @@
 - [ ] useWindowSize
 - [ ] useElementSize
 - [ ] useMouse
-- [ ] useScrollLock (if you classify it here instead of Browser)
+- [ ] useScrollLock
 
 ## Timing
 - [ ] useDebounce
@@ -45,7 +44,6 @@
 - [ ] useList
 - [ ] useMap
 - [ ] useSet
-- [ ] useLongPress (input-ish, but keep here or Input)
 
 ## Async / Data
 - [ ] useAsync
@@ -53,7 +51,7 @@
 
 ## Input
 - [ ] useHotkeys
-- [ ] useLongPress (if you prefer here)
+- [ ] useLongPress 
 
 ## Lifecycle
 - [ ] useMount
