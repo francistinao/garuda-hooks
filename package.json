@@ -1,6 +1,6 @@
 {
   "name": "garuda-hooks",
-  "version": "1.2.1",
+  "version": "1.0.0",
   "description": "A zero-dependency React/NextJS hooks: TypeScript-first (strict, no any), SSR-safe browser API usage, consistent tuple/object returns, ESM+CJS output with generated types, Vitest + React Testing Library coverage, and tree-shakeable per-hook entry points.",
   "main": "dist/cjs/index.cjs",
   "module": "dist/esm/index.js",
