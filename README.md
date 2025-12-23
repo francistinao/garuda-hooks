@@ -52,7 +52,7 @@ function Example() {
 - State: `useToggle`, `useDisclosure`, `usePrevious`, `useCounter`, `useList`, `useMap`, `useSet`
 - Next.js: `useHydrated`, `useIsServer`, `useIsomorphicLayoutEffect`
 - Input: `useHotkeys`, `useLongPress`
-- Specialized: `useFullscreen`, `useGeolocation`, `useOrientation`, `useColorScheme`, `useDocumentTitle`, `useFavicon`, `useHash`, `useScrollLock`, `useMouse`
+- Specialized: `useFullscreen`, `useGeolocation`, `useOrientation`, `useColorScheme`, `useDocumentTitle`, `useFavicon`, `useHash`, `useMouse`
 
 ## Core Principles
 
