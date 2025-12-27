@@ -82,5 +82,5 @@ export default function useClickOutside(
         document.removeEventListener(type, eventListener, capture)
       })
     }
-  }, [refs, handler, enabled, eventTypes, capture])
+  }, [refs, handler, enabled, eventTypes, capture, normalizedTargets])
 }
