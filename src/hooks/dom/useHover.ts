@@ -47,7 +47,7 @@ export default function useHover({
     return inputRefs.current ? [inputRefs.current] : []
   }, [])
 
-  const handleMouseEvent = (type: 'enter' | 'leave') => {
+  const handleMouseEvent = useCallback((type: 'enter' | 'leave') => {
     if (type === 'enter') {
       if (delayEnter > 0) {
         if (leaveTimeout.current) {
@@ -74,7 +74,7 @@ export default function useHover({
         setIsHovered(false)
       }
     }
-  }
+  }, [delayEnter, delayLeave])
 
   useEffect(() => {
     if (isSSR || !enabled) return
@@ -85,6 +85,7 @@ export default function useHover({
 
     const enterHandler = () => handleMouseEvent('enter')
     const leaveHandler = () => handleMouseEvent('leave')
+
     for (const element of elements) {
       element.addEventListener('mouseenter', enterHandler)
       element.addEventListener('mouseleave', leaveHandler)
@@ -96,7 +97,7 @@ export default function useHover({
         element.removeEventListener('mouseleave', leaveHandler)
       }
     }
-  }, [normalizeRefs, onHoverChange, enabled, refs])
+  }, [normalizeRefs, onHoverChange, enabled, refs, handleMouseEvent])
 
   return {
     isHovered,
