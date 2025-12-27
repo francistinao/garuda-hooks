@@ -96,7 +96,7 @@ export default function useHover({
         element.removeEventListener('mouseleave', leaveHandler)
       }
     }
-  }, [normalizeRefs, onHoverChange])
+  }, [normalizeRefs, onHoverChange, enabled, handleMouseEvent, refs])
 
   return {
     isHovered,
