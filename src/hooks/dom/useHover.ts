@@ -25,12 +25,7 @@ export default function useHover({
   refs: RefType
   options: Options
 }): UseHoverResult {
-  const {
-    enabled = true,
-    delayEnter = 0,
-    delayLeave = 0,
-    onHoverChange,
-  } = options ?? {}
+  const { enabled = true, delayEnter = 0, delayLeave = 0, onHoverChange } = options ?? {}
   const [isHovered, setIsHovered] = useState(false)
   let enterTimeout = useRef<number | null>(null)
   let leaveTimeout = useRef<number | null>(null)
@@ -47,34 +42,37 @@ export default function useHover({
     return inputRefs.current ? [inputRefs.current] : []
   }, [])
 
-  const handleMouseEvent = useCallback((type: 'enter' | 'leave') => {
-    if (type === 'enter') {
-      if (delayEnter > 0) {
-        if (leaveTimeout.current) {
-          clearTimeout(leaveTimeout.current)
-          leaveTimeout.current = null
-        }
-        enterTimeout.current = window.setTimeout(() => {
+  const handleMouseEvent = useCallback(
+    (type: 'enter' | 'leave') => {
+      if (type === 'enter') {
+        if (delayEnter > 0) {
+          if (leaveTimeout.current) {
+            clearTimeout(leaveTimeout.current)
+            leaveTimeout.current = null
+          }
+          enterTimeout.current = window.setTimeout(() => {
+            setIsHovered(true)
+          }, delayEnter)
+        } else {
           setIsHovered(true)
-        }, delayEnter)
-      } else {
-        setIsHovered(true)
-      }
-    } else {
-      if (delayLeave > 0) {
-        if (enterTimeout.current) {
-          clearTimeout(enterTimeout.current)
-          enterTimeout.current = null
         }
-
-        leaveTimeout.current = window.setTimeout(() => {
-          setIsHovered(false)
-        }, delayEnter)
       } else {
-        setIsHovered(false)
+        if (delayLeave > 0) {
+          if (enterTimeout.current) {
+            clearTimeout(enterTimeout.current)
+            enterTimeout.current = null
+          }
+
+          leaveTimeout.current = window.setTimeout(() => {
+            setIsHovered(false)
+          }, delayEnter)
+        } else {
+          setIsHovered(false)
+        }
       }
-    }
-  }, [delayEnter, delayLeave])
+    },
+    [delayEnter, delayLeave],
+  )
 
   useEffect(() => {
     if (isSSR || !enabled) return

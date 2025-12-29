@@ -20,10 +20,9 @@
 - [x] useHash
 
 ## DOM
-- [ ] useClickOutside
-- [ ] useHover
-- [ ] useIntersectionObserver
-- [ ] useWindowSize
+- [x] useClickOutside
+- [x] useHover
+- [x] useWindowSize
 - [ ] useElementSize
 - [ ] useMouse
 - [ ] useScrollLock
