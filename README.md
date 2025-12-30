@@ -133,7 +133,13 @@ Comprehensive documentation for each hook is available in the `docs/` directory.
 - [`useNetwork`](./docs/useNetwork/) - Network status and connection monitoring
 - [`useOrientation`](./docs/useOrientation/) - Device orientation detection
 
-## REMAINING HOOKS ARE WIP
+#### DOM Hooks
+- [`useClickOutside`](./docs/useClickOutside/) - Detect clicks outside specified elements (modals, dropdowns)
+- [`useHover`](./docs/useHover/) - Hover state detection with configurable delays
+- [`useWindowSize`](./docs/useWindowSize/) - Window dimensions tracking with debounce/throttle
+- `useElementSize` - Element size observation and tracking *(Work in progress)*
+
+## REMAINING HOOKS ARE WORK IN PROGRESS
 
 ## License
 
