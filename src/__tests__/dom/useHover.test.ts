@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import useHover from '../../hooks/dom/useHover'
+import { useHover } from '../../hooks/dom/useHover'
 import { RefObject } from 'react'
 
 // Mock isSSR

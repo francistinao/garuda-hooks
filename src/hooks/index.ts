@@ -1,8 +1,8 @@
 // storage
-export * from '../hooks/storage/index'
+export * from './storage/index'
 
 // browser
-export * from '../hooks/browser/index'
+export * from './browser/index'
 
 // dom
-export * from '../hooks/dom/index'
+export * from './dom/index'

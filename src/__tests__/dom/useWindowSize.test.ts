@@ -2,7 +2,7 @@
 import { renderHook, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { act } from '@testing-library/react'
-import useWindowSize from '../../hooks/dom/useWindowSize'
+import { useWindowSize } from '../../hooks/dom/useWindowSize'
 
 // Mock the isSSR helper
 vi.mock('../../helpers/is-ssr', () => ({

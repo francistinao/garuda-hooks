@@ -30,7 +30,7 @@ interface UseWindowSizeResult {
   lastUpdated?: Date
 }
 
-export default function useWindowSize({ options }: { options: Options }): UseWindowSizeResult {
+export function useWindowSize({ options }: { options: Options }): UseWindowSizeResult {
   const {
     enabled = true,
     initialWidth,

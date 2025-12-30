@@ -18,7 +18,7 @@ interface UseHoverResult {
   setIsHovered: (isHovered: boolean) => void
 }
 
-export default function useHover({
+export function useHover({
   refs,
   options,
 }: {

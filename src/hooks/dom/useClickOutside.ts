@@ -9,7 +9,7 @@ interface Options {
   capture?: boolean
 }
 
-export default function useClickOutside(
+export function useClickOutside(
   refs: RefObject<HTMLElement | null> | RefObject<HTMLElement | null>[],
   handler: (event: Event) => void,
   options: Options = {},

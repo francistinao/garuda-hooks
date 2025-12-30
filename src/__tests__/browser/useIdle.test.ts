@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import useIdle from '../../hooks/browser/useIdle'
+import { useIdle } from '../../hooks/browser/useIdle'
 
 // Mock isSSR helper
 vi.mock('../../helpers/is-ssr', () => ({
@@ -663,7 +663,7 @@ describe('useIdle', () => {
       }))
 
       // Import the hook after setting up the SSR mock
-      const { default: useIdleSSR } = await import('../../hooks/browser/useIdle')
+      const { useIdle: useIdleSSR } = await import('../../hooks/browser/useIdle')
 
       const { result } = renderHook(() => useIdleSSR())
 

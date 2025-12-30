@@ -14,7 +14,7 @@ interface UseIdle {
 const MAX_IDLE_TIME = 180000 // 3 minutes
 const INITIAL_ACTIVITY = isSSR ? 0 : Date.now()
 
-export default function useIdle(): UseIdle {
+export function useIdle(): UseIdle {
   const [idleInfo, setIdleInfo] = useState<UseIdle>({
     isIdle: false,
     lastActivity: INITIAL_ACTIVITY,
